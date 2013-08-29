@@ -1,7 +1,7 @@
 {
   "name": "grunt-bower-verify",
   "version": "0.1.0",
-  "description": "",
+  "description": "> Install and test all your dependencies versions.",
   "main": "tasks/verify.js",
   "dependencies": {
     "grunt": "~0.4.1"
@@ -22,5 +22,8 @@
     "url": "git@github.com:mokkabonna/grunt-bower-verify.git"
   },
   "author": "Martin Hansen",
-  "license": "MIT"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mokkabonna/grunt-bower-verify/issues"
+  }
 }
