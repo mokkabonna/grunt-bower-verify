@@ -1,0 +1,7 @@
+{
+  "name": "myproject",
+  "dependencies": {
+    "knockout.bindingHandlers.number": "~2.0.1",
+    "jquery": ">=1.7"
+  }
+}
