@@ -14,7 +14,11 @@ module.exports = function(grunt) {
 		//install package
 		bower.commands.install([endpoint + (version ? '#' + version : '')], {
 			production: true
-		}).on('end', handleInstallEnd).on('error', handleInstallError);
+		}).on('end', handleInstallEnd).on('error', handleInstallError).on('log', handleLog);
+
+		function handleLog(data) {
+			log(JSON.stringify(data, null, 2));
+		}
 
 		function handleInstallEnd(packages) {
 			if (!Object.keys(packages).length) log('Installed\t'.cyan + name);
