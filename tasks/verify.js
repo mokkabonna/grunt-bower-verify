@@ -17,7 +17,7 @@ module.exports = function(grunt) {
 		}).on('end', handleInstallEnd).on('error', handleInstallError).on('log', handleLog);
 
 		function handleLog(data) {
-			log(JSON.stringify(data, null, 2));
+			grunt.verbose.writeln(data.id.cyan + ' ' + data.message.yellow);
 		}
 
 		function handleInstallEnd(packages) {

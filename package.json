@@ -15,7 +15,7 @@
     "grunt-contrib-jshint": "~0.6.3"
   },
   "scripts": {
-    "test": "grunt bower-verify"
+    "test": "grunt bower-verify --verbose"
   },
   "repository": {
     "type": "git",
