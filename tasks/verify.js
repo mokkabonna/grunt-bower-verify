@@ -17,7 +17,7 @@ module.exports = function(grunt) {
 		}).on('end', handleInstallEnd).on('error', handleInstallError).on('log', handleLog);
 
 		function handleLog(data) {
-			grunt.verbose.writeln(data.id.cyan + ' ' + data.message.yellow);
+			grunt.verbose.writeln(data.id.cyan + '\t' + data.message.yellow);
 		}
 
 		function handleInstallEnd(packages) {
@@ -83,7 +83,7 @@ module.exports = function(grunt) {
 					var versions = data.versions.filter(function(version) {
 						//Skip versions that does not satisfy the bower.json version
 						if (!semver.satisfies(version, mustSatisfy)) {
-							grunt.verbose.writeln('Ignoring '.cyan + version.yellow + ' does not satisfy '.cyan + mustSatisfy.yellow);
+							grunt.verbose.writeln('Ignoring '.cyan +(endpoint + '#' + version).yellow + ' does not satisfy '.cyan + mustSatisfy.yellow);
 							return false;
 						}
 						return true;
