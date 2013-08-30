@@ -49,26 +49,58 @@ module.exports = function(grunt) {
 		var endpoints = Object.keys(dependencies); //currently this does not work with other than registered packages, like urls
 		var gruntTasks = this.data.tasks;
 		var done = this.async();
+		var remainingInfos = endpoints.length;
+		var options = this.options({
+			ignorePatch: false
+		});
+
+		function cleanPatchVersion(versions) {
+			if (options.ignorePatch) {
+				versions.forEach(function(version, index, array) {
+					//if ignoring patch remove last patch version
+					version = semver.clean(version);
+					array[index] = version.substr(0, version.length - 1) + '0'; //replace patch with 0
+				});
+
+				//make sure we have only unique values
+				versions = grunt.util._.uniq(versions);
+			}
+
+			return versions;
+		}
+
+
 
 		endpoints.forEach(function(endpoint) {
 			var mustSatisfy = dependencies[endpoint];
 			bower.commands.info(endpoint)
 				.on('end', function(data) {
-					data.versions.forEach(function(version) {
+
+					var versions = data.versions.filter(function(version) {
 						//Skip versions that does not satisfy the bower.json version
 						if (!semver.satisfies(version, mustSatisfy)) {
 							grunt.verbose.writeln('Ignoring '.cyan + version.yellow + ' does not satisfy '.cyan + mustSatisfy.yellow);
-							return;
+							return false;
 						}
+						return true;
+					});
+
+					versions = cleanPatchVersion(versions);
+
+					versions.forEach(function(version) {
+
+						//prefix it with ~ after we have done the semver check
+						if (options.ignorePatch) version = '~' + version;
 
 						grunt.task.run('bower-verify-install:' + endpoint + ':' + version);
 						grunt.task.run(gruntTasks);
 					});
 
-					done();
+					remainingInfos--;
+					if (!remainingInfos) done();
 				}).on('error', function() {
 					//TODO:better handling of this
-					log('Error occured during fetching of info');
+					grunt.warn('Error occured during fetching of info');
 				});
 
 		});

@@ -22,6 +22,14 @@ grunt.loadNpmTasks('grunt-bower-verify');
 _Run this task with the `grunt bower-verify` command._
 
 
+### Options
+
+#### ignorePatch
+Type: `Boolean`
+Default value: `false`
+
+This will only install the latest patch version of the major/minor version.
+
 
 ### Configuring
 

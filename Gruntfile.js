@@ -13,6 +13,9 @@ module.exports = function(grunt) {
 			}
 		},
 		"bower-verify": {
+			options : {
+				ignorePatch : true
+			},
 			test: {
 				tasks: ['jshint:tasks']
 			}
