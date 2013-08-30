@@ -48,7 +48,6 @@ module.exports = function(grunt) {
 		var dependencies = grunt.file.readJSON('bower.json').dependencies;
 		var endpoints = Object.keys(dependencies); //currently this does not work with other than registered packages, like urls
 		var gruntTasks = this.data.tasks;
-		var infosFetched = 0;
 		var done = this.async();
 
 		endpoints.forEach(function(endpoint) {
@@ -66,14 +65,7 @@ module.exports = function(grunt) {
 						grunt.task.run(gruntTasks);
 					});
 
-					//if this is the last endpoint info to be fetched, then do a normal bower install
-					infosFetched++;
-					if (infosFetched === endpoints.length) {
-						endpoints.forEach(function(endpoint) {
-							grunt.task.run('bower-verify-install:' + endpoint);
-						});
-						done();
-					}
+					done();
 				}).on('error', function() {
 					//TODO:better handling of this
 					log('Error occured during fetching of info');
