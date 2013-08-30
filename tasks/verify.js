@@ -17,7 +17,7 @@ module.exports = function(grunt) {
 		}).on('end', handleInstallEnd).on('error', handleInstallError).on('log', handleLog);
 
 		function handleLog(data) {
-			grunt.verbose.writeln(data.id.cyan + (data.id.length < 8 ? '\t\t' : '\t') + data.message.yellow);
+			grunt.verbose.writeln(data.id.cyan + (data.id.length < 7 ? '\t\t' : '\t') + data.message.yellow);
 		}
 
 		function handleInstallEnd(packages) {
@@ -31,6 +31,7 @@ module.exports = function(grunt) {
 		}
 
 		function handleInstallError(err) {
+
 			if (err.code === 'ECONFLICT') log('Incompatible version '.red + name);
 
 			err.picks.forEach(function(pick) {
