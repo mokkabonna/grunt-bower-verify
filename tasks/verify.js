@@ -11,9 +11,12 @@ module.exports = function(grunt) {
 
 		grunt.verbose.writeln('Installing\t'.cyan + name);
 
+		var isVerbose = grunt.option('verbose');
+
 		//install package
 		bower.commands.install([endpoint + (version ? '#' + version : '')], {
-			production: true
+			production: true,
+			verbose : isVerbose
 		}).on('end', handleInstallEnd).on('error', handleInstallError).on('log', handleLog);
 
 		function handleLog(data) {
