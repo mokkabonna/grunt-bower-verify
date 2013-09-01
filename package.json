@@ -1,6 +1,6 @@
 {
   "name": "grunt-bower-verify",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "> Install and test all your dependencies versions.",
   "main": "tasks/verify.js",
   "dependencies": {
@@ -25,5 +25,8 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/mokkabonna/grunt-bower-verify/issues"
-  }
+  },
+  "keywords": [
+    "gruntplugin" 
+  ]
 }
