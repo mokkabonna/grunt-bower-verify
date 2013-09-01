@@ -30,6 +30,19 @@ Default value: `false`
 
 This will only install the latest patch version of the major/minor version.
 
+#### showTasksOutput
+Type: `Boolean`
+Default value: `true`
+
+If false it will just show one line with OK or ERROR at the end depending on if the tasks failed or not.
+
+#### completeOnError
+Type: `Boolean`
+Default value: `true`
+
+Completes all versions before failimg if an error.
+
+
 
 ### Configuring
 
