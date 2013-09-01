@@ -202,12 +202,13 @@ module.exports = function(grunt) {
 				var allVersions = versionMatrix[index];
 				var mustSatisfy = dependencies[endpoint];
 				var cleanVersions = getMatchingVersions(allVersions, mustSatisfy);
-				cleanPatchVersion(cleanVersions);
+
+				//ignore patch
+				if (options.ignorePatch) cleanVersions = cleanPatchVersion(cleanVersions);
 
 				_.without(allVersions, cleanVersions).forEach(function(version) {
 					verboseln('Ignoring ' + endpoint + '#' + version + ' does not satisfy ' + mustSatisfy);
 				});
-
 
 				versionedEndpoints = versionedEndpoints.concat(cleanVersions.map(function(version) {
 					var prefix = options.ignorePatch ? '~' : '';
@@ -242,23 +243,14 @@ module.exports = function(grunt) {
 		}
 
 		function cleanPatchVersion(versions) {
+			versions.forEach(function(version, index, array) {
+				//if ignoring patch remove last patch version
+				version = semver.clean(version);
+				array[index] = version.substr(0, version.length - 1) + '0'; //replace patch with 0
+			});
 
-			try {
-				if (options.ignorePatch) {
-					versions.forEach(function(version, index, array) {
-						//if ignoring patch remove last patch version
-						version = semver.clean(version);
-						array[index] = version.substr(0, version.length - 1) + '0'; //replace patch with 0
-					});
-
-					//make sure we have only unique values
-					versions = _.uniq(versions);
-				}
-			} catch (e) {
-				logln(e);
-			}
-
-
+			//make sure we have only unique values
+			return _.uniq(versions);
 		}
 	});
 };
