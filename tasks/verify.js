@@ -1,9 +1,16 @@
 module.exports = function(grunt) {
 	var bower = require('bower');
+	var async = require('async');
 	var colors = require('colors');
 	var semver = require('semver');
 	var inquirer = require('inquirer');
 	var log = grunt.log.writeln;
+	var verboseln = grunt.verbose.writeln;
+	var logln = grunt.log.writeln;
+
+	var jlog = function(obj) {
+		grunt.log.writeln(JSON.stringify(obj, null, 2));
+	};
 
 	grunt.registerTask('bower-verify-install', function(endpoint, version) {
 		var done = this.async();
@@ -74,55 +81,82 @@ module.exports = function(grunt) {
 			ignorePatch: false
 		});
 
-		function cleanPatchVersion(versions) {
-			if (options.ignorePatch) {
-				versions.forEach(function(version, index, array) {
-					//if ignoring patch remove last patch version
-					version = semver.clean(version);
-					array[index] = version.substr(0, version.length - 1) + '0'; //replace patch with 0
-				});
+		//fetch all the infos in parallel
+		async.map(endpoints, getVersion, function(err, versionMatrix) {
+			if (err) grunt.warn('Could not get info for some dependencies');
+			verboseln('Finished fetching all infos');
 
-				//make sure we have only unique values
-				versions = grunt.util._.uniq(versions);
+			var versionedEndpoints = [];
+
+			//clean up
+			endpoints.forEach(function(endpoint, index) {
+				var cleanVersions = getMatchingVersions(versionMatrix[index], dependencies[endpoint]);
+				versionedEndpoints = versionedEndpoints.concat(cleanVersions.map(function(version) {
+					return endpoint + '#' + version;
+				}));
+			});
+
+
+
+			async.series(versionedEndpoints.map(install), function(err, results) {
+				if (err) grunt.warn('Could not install some dependencies');
+				verboseln('finished installing all');
+				jlog(results);
+			});
+
+			//verboseln('Ignoring '.cyan + (endpoint + '#' + version).yellow + ' does not satisfy '.cyan + mustSatisfy.yellow);
+		});
+
+	});
+
+	function install(endpoint) {
+		return function(callback){
+			bower.commands.install([endpoint], {
+				production: true
+			}).on('end', function(data) {
+				verboseln('Installed ' +  endpoint);
+				callback(null, data);
+			});
+		}
+	}
+
+	function getVersion(endpoint, callback) {
+		verboseln('Fetching info for ' + endpoint);
+		bower.commands.info(endpoint)
+			.on('end', function(data) {
+				verboseln('Got info for ' + endpoint);
+				callback(null, data.versions);
+			}).on('error', function(error) {
+				//TODO:better handling of this
+				verboseln('Error occured during fetching of info');
+				callback(error);
+			});
+	}
+
+	function getMatchingVersions(versions, mustSatisfy) {
+		return versions.filter(function(version) {
+			//Skip versions that does not satisfy the bower.json version
+			if (!semver.satisfies(version, mustSatisfy)) {
+				return false;
 			}
+			return true;
+		});
+	}
 
-			return versions;
+
+
+	function cleanPatchVersion(versions) {
+		if (options.ignorePatch) {
+			versions.forEach(function(version, index, array) {
+				//if ignoring patch remove last patch version
+				version = semver.clean(version);
+				array[index] = version.substr(0, version.length - 1) + '0'; //replace patch with 0
+			});
+
+			//make sure we have only unique values
+			versions = grunt.util._.uniq(versions);
 		}
 
-
-
-		endpoints.forEach(function(endpoint) {
-			var mustSatisfy = dependencies[endpoint];
-			bower.commands.info(endpoint)
-				.on('end', function(data) {
-
-					var versions = data.versions.filter(function(version) {
-						//Skip versions that does not satisfy the bower.json version
-						if (!semver.satisfies(version, mustSatisfy)) {
-							grunt.verbose.writeln('Ignoring '.cyan + (endpoint + '#' + version).yellow + ' does not satisfy '.cyan + mustSatisfy.yellow);
-							return false;
-						}
-						return true;
-					});
-
-					versions = cleanPatchVersion(versions);
-
-					versions.forEach(function(version) {
-
-						//prefix it with ~ after we have done the semver check
-						if (options.ignorePatch) version = '~' + version;
-
-						grunt.task.run('bower-verify-install:' + endpoint + ':' + version);
-						grunt.task.run(gruntTasks);
-					});
-
-					remainingInfos--;
-					if (!remainingInfos) done();
-				}).on('error', function() {
-					//TODO:better handling of this
-					grunt.warn('Error occured during fetching of info');
-				});
-
-		});
-	});
+		return versions;
+	}
 };

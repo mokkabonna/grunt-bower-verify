@@ -22,7 +22,7 @@ module.exports = function(grunt) {
 		},
 		watch: {
 			develop: {
-				files: ['**/*.js', 'bower.json'],
+				files: ['tasks/*.js', 'bower.json'],
 				tasks: ['bower-verify'],
 			}
 		}
