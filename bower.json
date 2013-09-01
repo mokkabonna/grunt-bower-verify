@@ -2,6 +2,6 @@
   "name": "myproject",
   "dependencies": {
     "knockout.bindingHandlers.number": "~2.0.1",
-    "jquery": ">=2.0.2"
+    "jquery": ">=2.0.3"
   }
 }

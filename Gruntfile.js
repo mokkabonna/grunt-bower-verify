@@ -13,8 +13,10 @@ module.exports = function(grunt) {
 			}
 		},
 		"bower-verify": {
-			options : {
-				ignorePatch : true
+			options: {
+				ignorePatch: true,
+				showTasksOutput: false,
+				completeOnError: true
 			},
 			test: {
 				tasks: ['jshint:tasks']
@@ -22,7 +24,7 @@ module.exports = function(grunt) {
 		},
 		watch: {
 			develop: {
-				files: ['tasks/*.js', 'bower.json'],
+				files: ['Gruntfile.js', 'tasks/*.js', 'bower.json'],
 				tasks: ['bower-verify'],
 			}
 		}
