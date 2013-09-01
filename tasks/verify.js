@@ -16,36 +16,48 @@ module.exports = function(grunt) {
 		//install package
 		bower.commands.install([endpoint + (version ? '#' + version : '')], {
 			production: true,
-			verbose : isVerbose
+			verbose: isVerbose
 		}).on('end', handleInstallEnd).on('error', handleInstallError).on('log', handleLog);
 
 		function handleLog(data) {
-			grunt.verbose.writeln(data.id.cyan + (data.id.length < 7 ? '\t\t' : '\t') + data.message.yellow);
+			try {
+				grunt.verbose.writeln(data.id.cyan + (data.id.length < 7 ? '\t\t' : '\t') + data.message.yellow);
+			} catch (e) {
+				grunt.log.writeln('log data not as expected');
+			}
 		}
 
 		function handleInstallEnd(packages) {
-			if (!Object.keys(packages).length) log('Installed\t'.cyan + name);
+			try {
+				if (!Object.keys(packages).length) log('Installed\t'.cyan + name);
 
-			grunt.util._.each(packages, function(package) {
-				log('Installed\t'.cyan + (package.pkgMeta.name + '#' + package.pkgMeta.version).yellow);
-			});
+				grunt.util._.each(packages, function(package) {
+					log('Installed\t'.cyan + (package.pkgMeta.name + '#' + package.pkgMeta.version).yellow);
+				});
+			} catch (e) {
+				log('Install data not as expected.');
+			}
 
 			done();
 		}
 
 		function handleInstallError(err) {
+			try {
+				if (err.code === 'ECONFLICT') log('Incompatible version '.red + name);
 
-			if (err.code === 'ECONFLICT') log('Incompatible version '.red + name);
-
-			err.picks.forEach(function(pick) {
-				pick.dependants.forEach(function(dependant) {
-					grunt.util._.each(dependant.pkgMeta.dependencies, function(dependantVersion, dependency) {
-						if (err.name !== dependency) return; //don't print packages that isn't relevant here
-						if (semver.satisfies(version, dependantVersion)) return; //don't print for dependants that are satisfied
-						log('Package '.cyan + dependant.pkgMeta.name.yellow + ' requires '.green + (dependency + '#' + dependantVersion).yellow);
+				err.picks.forEach(function(pick) {
+					pick.dependants.forEach(function(dependant) {
+						grunt.util._.each(dependant.pkgMeta.dependencies, function(dependantVersion, dependency) {
+							if (err.name !== dependency) return; //don't print packages that isn't relevant here
+							if (semver.satisfies(version, dependantVersion)) return; //don't print for dependants that are satisfied
+							log('Package '.cyan + dependant.pkgMeta.name.yellow + ' requires '.green + (dependency + '#' + dependantVersion).yellow);
+						});
 					});
 				});
-			});
+
+			} catch (e) {
+				log('Error data not as expected.');
+			}
 
 			done();
 		}
@@ -87,7 +99,7 @@ module.exports = function(grunt) {
 					var versions = data.versions.filter(function(version) {
 						//Skip versions that does not satisfy the bower.json version
 						if (!semver.satisfies(version, mustSatisfy)) {
-							grunt.verbose.writeln('Ignoring '.cyan +(endpoint + '#' + version).yellow + ' does not satisfy '.cyan + mustSatisfy.yellow);
+							grunt.verbose.writeln('Ignoring '.cyan + (endpoint + '#' + version).yellow + ' does not satisfy '.cyan + mustSatisfy.yellow);
 							return false;
 						}
 						return true;
