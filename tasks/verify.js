@@ -12,7 +12,7 @@ module.exports = function(grunt) {
 		grunt.log.writeln(JSON.stringify(obj, null, 2));
 	};
 
-	grunt.registerMultiTask('bower-verify', function(target) {
+	grunt.registerMultiTask('bowerVerify', function(target) {
 		var dependencies = grunt.file.readJSON('bower.json').dependencies;
 		var endpoints = Object.keys(dependencies); //currently this does not work with other than registered packages, like urls
 		var gruntTasks = this.data.tasks;

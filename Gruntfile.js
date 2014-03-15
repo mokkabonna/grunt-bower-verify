@@ -12,7 +12,7 @@ module.exports = function(grunt) {
 				src: ['test/**/*.js'],
 			}
 		},
-		"bower-verify": {
+		bowerVerify: {
 			options: {
 				ignorePatch: true,
 				showTasksOutput: false,

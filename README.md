@@ -1,6 +1,6 @@
 # grunt-bower-verify
 
-> Install and test all your dependencies versions.
+> Prove your bower.json don't lie. Install and test all your dependencies versions.
 
 
 ## Getting Started
@@ -49,7 +49,7 @@ Completes all versions before failimg if an error.
 This is a multitask so you can specify your own targets
 
 ```js
-"bower-verify": {
+bowerVerify: {
 	targetname: {
 		tasks: ['test'] //some task or tasks of your choice to be run after each bower install
 	}
