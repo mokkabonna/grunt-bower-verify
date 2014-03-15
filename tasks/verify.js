@@ -74,7 +74,10 @@ module.exports = function(grunt) {
 					});
 
 					if (errors.length) {
-						printErrors(errors);
+						//print output only if not already outputted
+						if(!options.showTasksOutput) printErrors(errors);
+
+						//fail while task
 						grunt.warn('Some tasks failed');
 					}
 				}
