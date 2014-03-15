@@ -229,6 +229,13 @@ module.exports = function(grunt) {
 			bower.commands.info(endpoint)
 				.on('end', function(data) {
 					verboseln('Got info for ' + endpoint);
+
+					//remove any per releases, wish bower did this already, or at least had an option for it
+					data.versions = data.versions.filter(function(version) {
+						//allow only normal versions
+						return version.match(/^[\d]+\.[\d]+\.[\d]+$/) !== null;
+					});
+
 					callback(null, data.versions);
 				}).on('error', function(error) {
 					//TODO:better handling of this
