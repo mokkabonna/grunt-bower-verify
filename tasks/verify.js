@@ -24,6 +24,7 @@ module.exports = function(grunt) {
 			ignorePatch: false,
 			showTasksOutput: true,
 			completeOnError: true,
+			onlyStandardVersions: true,
 		});
 
 		//fetch all the infos in parallel
@@ -230,11 +231,13 @@ module.exports = function(grunt) {
 				.on('end', function(data) {
 					verboseln('Got info for ' + endpoint);
 
-					//remove any per releases, wish bower did this already, or at least had an option for it
-					data.versions = data.versions.filter(function(version) {
-						//allow only normal versions
-						return version.match(/^[\d]+\.[\d]+\.[\d]+$/) !== null;
-					});
+					if(options.onlyStandardVersions){
+						//remove any per releases, wish bower did this already, or at least had an option for it
+						data.versions = data.versions.filter(function(version) {
+							//allow only normal versions
+							return version.match(/^[\d]+\.[\d]+\.[\d]+$/) !== null;
+						});
+					}
 
 					callback(null, data.versions);
 				}).on('error', function(error) {

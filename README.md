@@ -30,6 +30,12 @@ Default value: `false`
 
 This will only install the latest patch version of the major/minor version.
 
+#### onlyStandardVersions
+Type: `Boolean`
+Default value: `true`
+
+This will only install versions that match `/^[\d]+\.[\d]+\.[\d]+$/`. So only `x.y.z`. This means pre-release versions and versions containing build info is ignored. These versions do easily cause problems, so this option is on by default.
+
 #### showTasksOutput
 Type: `Boolean`
 Default value: `true`
