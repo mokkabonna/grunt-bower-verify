@@ -66,7 +66,9 @@ module.exports = function(grunt) {
 				//print summary if show task output, might be a lot
 				if (options.showTasksOutput) {
 					printSummary(results);
-				} else if (options.completeOnError) {
+				}
+
+				if (options.completeOnError) {
 					var errors = results.filter(function(result) {
 						return !result.ok;
 					});
