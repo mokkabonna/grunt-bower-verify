@@ -1,6 +1,6 @@
 {
   "name": "grunt-bower-verify",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "> Install and test all your dependencies versions.",
   "main": "tasks/verify.js",
   "dependencies": {
