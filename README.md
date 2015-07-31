@@ -2,6 +2,7 @@
 
 > Prove your bower.json don't lie. Install and test all your dependencies versions.
 
+[![Dependency Status](https://david-dm.org/mokkabonna/grunt-bower-verify.svg)](https://david-dm.org/mokkabonna/grunt-bower-verify)
 
 ## Getting Started
 This plugin requires Grunt `~0.4.0`
