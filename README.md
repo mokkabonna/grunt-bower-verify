@@ -1,3 +1,7 @@
+NO LONGER SUPPORTED, IF YOU USE THIS AND WANT TO MAINTAIN IT LET ME KNOW!
+-------------
+
+
 # grunt-bower-verify
 
 > Prove your bower.json don't lie. Install and test all your dependencies versions.
